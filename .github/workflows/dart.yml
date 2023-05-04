@@ -11,7 +11,7 @@ env:
   XCODE_VERSION: '14.3'
   PATH_TO_AAB: 'build/app/outputs/bundle/release/app-release.aab'
   ANDROID_PACKAGE_NAME: 'com.base.project'
-  PATH_TO_IPA: 'build/ios/ipa/flutter_github_actions_basics.ipa'
+  # PATH_TO_IPA: 'build/ios/ipa/flutter_github_actions_basics.ipa'
 
 jobs:
   deploy_android:
@@ -35,8 +35,8 @@ jobs:
         with:
           flutter-version: 3.7.12
       - run: flutter pub get
-      - run: flutter build appbundle
-      - name: Upload AAB artifact
+      - run: flutter build apk --release
+      - name: Upload apk artifact
         uses: actions/upload-artifact@v3
         with:
           name: release-aab
