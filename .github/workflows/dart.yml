@@ -25,6 +25,10 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 12.x
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
       - name: Decode android
         run: echo "${{ secrets.KEYSTORE_JKS_PROD }}" | base64 --decode > android/base.jks
 
