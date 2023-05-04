@@ -7,8 +7,8 @@ on:
 
 env:
   FLUTTER_CHANNEL: 'stable' # 'stable', 'beta', or 'master', default to: 'stable'
-  FLUTTER_VERSION: '3.3.3'
-  XCODE_VERSION: '13.4'
+  FLUTTER_VERSION: '3.7.2'
+  XCODE_VERSION: '14.3'
   PATH_TO_AAB: 'build/app/outputs/bundle/release/app-release.aab'
   ANDROID_PACKAGE_NAME: 'com.base.project'
   PATH_TO_IPA: 'build/ios/ipa/flutter_github_actions_basics.ipa'
