@@ -48,7 +48,7 @@ jobs:
           appId: ${{secrets.FIREBASE_APP_ID}}
           token: ${{secrets.FIREBASE_TOKEN}}
           groups: testers
-          file: app/build/outputs/apk/release/app-release-unsigned.apk
+          file: app/build/app/outputs/flutter-apk/app-release.apk
   # build-ios:
   #   runs-on: macos-latest
   #   defaults:
