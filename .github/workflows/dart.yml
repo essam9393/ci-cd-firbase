@@ -9,8 +9,8 @@ env:
   FLUTTER_CHANNEL: 'stable' # 'stable', 'beta', or 'master', default to: 'stable'
   FLUTTER_VERSION: '3.7.12'
   XCODE_VERSION: '14.3'
-  PATH_TO_APK: 'build/app/outputs/flutter-apk/app-release.apk'
-  ANDROID_PACKAGE_NAME: 'com.base.project'
+  # PATH_TO_APK: 'build/app/outputs/flutter-apk/app-release.apk'
+  # ANDROID_PACKAGE_NAME: 'com.base.project'
   PATH_TO_IPA: 'build/ios/ipa/flutter_github_actions_basics.ipa'
 
 jobs:
@@ -70,7 +70,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: subosito/flutter-action@v1.5.3
+      - uses: subosito/flutter-action@v2.10.0
 
       - name: Install Dependencies
         run: flutter packages get
