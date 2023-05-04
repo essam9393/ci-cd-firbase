@@ -9,7 +9,7 @@ env:
   FLUTTER_CHANNEL: 'stable' # 'stable', 'beta', or 'master', default to: 'stable'
   FLUTTER_VERSION: '3.7.12'
   XCODE_VERSION: '14.3'
-  PATH_TO_AAB: 'build/app/outputs/bundle/release/app-release.aab'
+  PATH_TO_APK: 'build/app/outputs/flutter-apk/app-release.apk'
   ANDROID_PACKAGE_NAME: 'com.base.project'
   # PATH_TO_IPA: 'build/ios/ipa/flutter_github_actions_basics.ipa'
 
@@ -48,7 +48,7 @@ jobs:
           appId: ${{secrets.FIREBASE_APP_ID}}
           token: ${{secrets.FIREBASE_TOKEN}}
           groups: testers
-          file: app/build/app/outputs/flutter-apk/app-release.apk
+          file: build/app/outputs/flutter-apk/app-release.apk
   # build-ios:
   #   runs-on: macos-latest
   #   defaults:
