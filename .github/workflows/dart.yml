@@ -83,8 +83,8 @@ jobs:
         FS_PROV_FILE: ${{ secrets.FS_PROV_FILE }}
       run: |
         echo "Convert base64 strings to files"
-        echo "$FS_PROV_FILE" >> prov.temp.txt
-        echo "$FS_P12_FILE ">> cert.temp.txt
+        echo "$FS_PROV_FILE" | base64 --decode > prov.temp.mobileprovision
+        echo "$FS_P12_FILE" | base64 --decode > cert.temp.p12
         base64 --decode prov.temp.txt > prov.temp.mobileprovision
         base64 --decode cert.temp.txt > cert.temp.p12
         echo "Copy provisioning file to the correct locations"
