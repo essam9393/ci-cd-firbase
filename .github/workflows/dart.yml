@@ -1,55 +1,82 @@
-name: iOS Build
+name: Flutter CI + CD
 
+# This workflow is triggered on pushes to the repository.
 on:
-  push:
-    branches:
-      - main
+  push: 
+    branches: [ main ] # This will trigger the workflow on every push to the main branch
+  # pull_request:
+  #   branches: [ main ] # Add this trigger to run this workflow on PR's to the main branch
+  workflow_dispatch: # to manually run this workflow
+
+env:
+  FLUTTER_CHANNEL: 'stable' # 'stable', 'beta', or 'master', default to: 'stable'
+  FLUTTER_VERSION: '3.7.12'
+  XCODE_VERSION: latest-stable
+  PATH_TO_IPA: 'build/ios/ipa/deleteme.ipa'
 
 jobs:
-  build:
-    runs-on: macOS-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v1.5.1
-
-    - name: Get packages
-      run: flutter pub get
-
-    - name: Import Certificate and Provisioning Profile
-      run: |
-        echo "${{ secrets.IOS_DISTRIBUTION_CERTIFICATE }}" > ios_distribution.p12
-        security create-keychain -p "" ios-build.keychain
-        security import ios_distribution.p12 -k ~/Library/Keychains/ios-build.keychain -P ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_PASSWORD }} -T /usr/bin/codesign
-        security list-keychains -s ~/Library/Keychains/ios-build.keychain
-        security unlock-keychain -p "" ~/Library/Keychains/ios-build.keychain
-        security set-keychain-settings -t 3600 -l ~/Library/Keychains/ios-build.keychain
-        mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-        cp Runner.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
-
-    - name: Build and Archive
-      run: flutter build ios --release --no-codesign
-
-    - name: Archive
-      uses: actions/upload-artifact@v2
+  ios:
+    name: iOS CI/CD
+    # needs: code-analysis-and-testing
+    runs-on: macos-latest
+    steps:  
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    
+    - name: Set up Xcode ${{ env.XCODE_VERSION }}
+      uses: maxim-lobanov/setup-xcode@v1
       with:
-        name: iOS-Release
-        path: build/ios/archive/Runner.xcarchive
+        xcode-version: ${{ env.XCODE_VERSION }}
 
-    - name: Sign and Export
-      run: |
-        xcodebuild -exportArchive -archivePath build/ios/archive/Runner.xcarchive -exportPath build/ios/ipa -exportOptionsPlist exportOptions.plist
-        ls -l build/ios/ipa
+    - name: Prepare code signing
       env:
-        CERTIFICATE_P12: ${{ secrets.FS_P12_FILE }}
-        CERTIFICATE_PASSWORD: ${{ secrets.FS_P12_PASS }}
-        PROVISIONING_PROFILE: Runner.mobileprovision
-
-    - name: Upload IPA file
-      uses: actions/upload-artifact@v2
+        FS_KEYCHAIN_PASS: ${{ secrets.FS_KEYCHAIN_PASS }}
+        FS_P12_FILE: ${{ secrets.FS_P12_FILE }}
+        FS_P12_PASS: ${{ secrets.FS_P12_PASS }}
+        FS_PROV_FILE: ${{ secrets.FS_PROV_FILE }}
+      run: |
+        echo "Convert base64 strings to files"
+        echo "$FS_PROV_FILE" >> prov.temp.txt
+        echo "$FS_P12_FILE ">> cert.temp.txt
+        base64 --decode prov.temp.txt > prov.temp.mobileprovision
+        base64 --decode cert.temp.txt > cert.temp.p12
+        echo "Copy provisioning file to the correct locations"
+        mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+        cp prov.temp.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/prov.mobileprovision
+        echo "Create a new keychain & import p12 certificate"
+        security create-keychain -p "$FS_KEYCHAIN_PASS" build.keychain
+        security import cert.temp.p12 -t agg -k ~/Library/Keychains/build.keychain -P "$FS_P12_PASS" -A
+        echo "Set new keychain as a default"
+        security list-keychains -s ~/Library/Keychains/build.keychain
+        security default-keychain -s ~/Library/Keychains/build.keychain
+        security unlock-keychain -p "$FS_KEYCHAIN_PASS" ~/Library/Keychains/build.keychain
+        security set-key-partition-list -S apple-tool:,apple: -s -k "$FS_KEYCHAIN_PASS" ~/Library/Keychains/build.keychain
+        echo "Clean up temp files"
+        rm *.temp.*
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
       with:
-        name: iOS-IPA
-        path: build/ios/ipa/Runner.ipa
+        channel: ${{ env.FLUTTER_CHANNEL }}
+        # flutter-version: ${{ env.FLUTTER_VERSION }} # you can also specify exact version of flutter
+    
+    - name: Flutter doctor
+      run: flutter doctor # this is an optional step and can be removed
+
+    - name: Build IPA
+      env:
+        FS_KEYCHAIN_PASS: ${{ secrets.FS_KEYCHAIN_PASS }}
+      run: |
+        echo "Unlocking keychain"
+        security unlock-keychain -p "$FS_KEYCHAIN_PASS" ~/Library/Keychains/build.keychain
+        # Important, just in case the build takes longer than the default 300s timeout
+        # Otherwise the build will freeze at signing the frameworks if the keychain is locked
+        echo "Increasing keychain auto lock timeout"
+        security set-keychain-settings -lut 1800 ~/Library/Keychains/build.keychain
+        flutter build ipa --release
+        echo "Locking keychain"
+        security lock-keychain ~/Library/Keychains/build.keychain
+    - name: Upload IPA artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: release-ipa
+        path: ${{ env.PATH_TO_IPA }}
