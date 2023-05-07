@@ -11,7 +11,7 @@ on:
 env:
   FLUTTER_CHANNEL: 'stable' # 'stable', 'beta', or 'master', default to: 'stable'
   FLUTTER_VERSION: '3.7.12'
-  XCODE_VERSION: '13.0'
+  XCODE_VERSION: '14.2'
   PATH_TO_IPA: 'build/ios/ipa/deleteme.ipa'
 jobs:
   ios:
@@ -67,15 +67,14 @@ jobs:
         FS_KEYCHAIN_PASS: ${{ secrets.FS_KEYCHAIN_PASS }}
       run: |
         echo "Unlocking keychain"
-        security unlock-keychain -p "$FS_KEYCHAIN_PASS" ~/Library/Keychains/build.keychain
+        security unlock-keychain -p "$FS_KEYCHAIN_PASS" -a ~/Library/Keychains/build.keychain
         # Important, just in case the build takes longer than the default 300s timeout
         # Otherwise the build will freeze at signing the frameworks if the keychain is locked
         echo "Increasing keychain auto lock timeout"
-        security set-keychain-settings -lut 1800 ~/Library/Keychains/build.keychain
-        flutter build ipa
+        security set-keychain-settings -t 1800 -a ~/Library/Keychains/build.keychain
+        flutter build ipa -allowProvisioningUpdates
         echo "Locking keychain"
         security lock-keychain ~/Library/Keychains/build.keychain
-
     - name: Upload IPA artifact
       uses: actions/upload-artifact@v3
       with:
