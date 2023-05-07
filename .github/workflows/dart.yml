@@ -11,14 +11,14 @@ on:
 env:
   FLUTTER_CHANNEL: 'stable' # 'stable', 'beta', or 'master', default to: 'stable'
   FLUTTER_VERSION: '3.7.12'
-  XCODE_VERSION: '14.2'
+  XCODE_VERSION: '13.0'
   PATH_TO_IPA: 'build/ios/ipa/deleteme.ipa'
 jobs:
   ios:
     name: iOS CI/CD
     # needs: code-analysis-and-testing
-    runs-on: macos-12
-    timeout-minutes: 30
+    runs-on: macos-latest
+    # timeout-minutes: 30
     steps:  
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -72,20 +72,20 @@ jobs:
         # Otherwise the build will freeze at signing the frameworks if the keychain is locked
         echo "Increasing keychain auto lock timeout"
         security set-keychain-settings -lut 1800 ~/Library/Keychains/build.keychain
-        flutter build ipa --release
+        flutter build ipa
         echo "Locking keychain"
         security lock-keychain ~/Library/Keychains/build.keychain
 
     - name: Upload IPA artifact
       uses: actions/upload-artifact@v3
       with:
-        name: release-ipa
+        name: deleteme
         path: ${{ env.PATH_TO_IPA }}
 
-    - name: Publishing app to TestFlight
-      env:
-        IOS_API_ISSUER_ID: ${{ secrets.IOS_API_ISSUER_ID }}
-        IOS_API_KEY_ID: ${{ secrets.IOS_API_KEY_ID }}
-        PATH_TO_IPA: ${{ env.PATH_TO_IPA }}
-      run: |
-        xcrun altool --upload-app -t ios -f $PATH_TO_IPA --apiKey "$IOS_API_KEY_ID" --apiIssuer "$IOS_API_ISSUER_ID"
+    # - name: Publishing app to TestFlight
+    #   env:
+    #     IOS_API_ISSUER_ID: ${{ secrets.IOS_API_ISSUER_ID }}
+    #     IOS_API_KEY_ID: ${{ secrets.IOS_API_KEY_ID }}
+    #     PATH_TO_IPA: ${{ env.PATH_TO_IPA }}
+    #   run: |
+    #     xcrun altool --upload-app -t ios -f $PATH_TO_IPA --apiKey "$IOS_API_KEY_ID" --apiIssuer "$IOS_API_ISSUER_ID"
