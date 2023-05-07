@@ -71,11 +71,7 @@ jobs:
         # Important, just in case the build takes longer than the default 300s timeout
         # Otherwise the build will freeze at signing the frameworks if the keychain is locked
         echo "Increasing keychain auto lock timeout"
-<<<<<<< HEAD
         security set-keychain-settings -t 1800 -a ~/Library/Keychains/build.keychain
-=======
-        security set-keychain-settings -lut 1800 ~/Library/Keychains/build.keychain
->>>>>>> refs/remotes/origin/main
         flutter build ipa -allowProvisioningUpdates
         echo "Locking keychain"
         security lock-keychain ~/Library/Keychains/build.keychain
