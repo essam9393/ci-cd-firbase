@@ -3,7 +3,7 @@ name: Firebase-Distribution CI + CD
 # This workflow is triggered on pushes to the repository.
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
   # pull_request:
   #   branches: [ main ] # Add this trigger to run this workflow on PR's to the main branch
   workflow_dispatch: # to manually run this workflow
