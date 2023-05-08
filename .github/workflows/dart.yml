@@ -51,10 +51,10 @@ jobs:
           xcodebuild archive -workspace MyProject.xcworkspace -scheme MyScheme -destination 'generic/platform=iOS' -archivePath MyProject.xcarchive CODE_SIGN_STYLE="Manual" CODE_SIGN_IDENTITY="iPhone Distribution" PROVISIONING_PROFILE_SPECIFIER="My Provisioning Profile"
       
       - name: Export IPA
-        uses: jwalton/xcode-export@v2
-        with:
-          archive_path: MyProject.xcarchive
-          export_options: development
+        run: xcodebuild -exportArchive -archivePath MyProject.xcarchive -exportPath MyProject.ipa -exportOptionsPlist exportOptions.plist
+        env:
+          DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
+        
       
       - name: Upload to App Store Connect
         uses: jhaals/transporter-action@v1
