@@ -36,3 +36,30 @@ jobs:
           # apply provisioning profile
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+
+      - name: Install dependencies
+        run: |
+          gem install bundler
+          bundle install
+        
+      - name: Build app
+        run: |
+          xcodebuild clean build -workspace MyProject.xcworkspace -scheme MyScheme -destination 'platform=iOS Simulator,name=iPhone 12' CODE_SIGN_STYLE="Manual" CODE_SIGN_IDENTITY="iPhone Distribution" PROVISIONING_PROFILE_SPECIFIER="My Provisioning Profile"
+      
+      - name: Export archive
+        run: |
+          xcodebuild archive -workspace MyProject.xcworkspace -scheme MyScheme -destination 'generic/platform=iOS' -archivePath MyProject.xcarchive CODE_SIGN_STYLE="Manual" CODE_SIGN_IDENTITY="iPhone Distribution" PROVISIONING_PROFILE_SPECIFIER="My Provisioning Profile"
+      
+      - name: Export IPA
+        uses: jwalton/xcode-export@v2
+        with:
+          archive_path: MyProject.xcarchive
+          export_options: development
+      
+      - name: Upload to App Store Connect
+        uses: jhaals/transporter-action@v1
+        with:
+          username: ${{ secrets.APP_STORE_CONNECT_USERNAME }}
+          password: ${{ secrets.APP_STORE_CONNECT_PASSWORD }}
+          package_path: MyProject.ipa
+        
