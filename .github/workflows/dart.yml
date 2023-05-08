@@ -69,13 +69,13 @@ jobs:
       run: |
         echo "Unlocking keychain"
         security unlock-keychain -p "$FS_KEYCHAIN_PASS" ~/Library/Keychains/build.keychain
-        # Important, just in case the build takes longer than the default 300s timeout
-        # Otherwise the build will freeze at signing the frameworks if the keychain is locked
-        echo "Increasing keychain auto lock timeout"
-        security set-keychain-settings -lut 2680 ~/Library/Keychains/build.keychain
-        flutter build ipa --release
-        echo "Locking keychain"
-        security lock-keychain ~/Library/Keychains/build.keychain
+        # # Important, just in case the build takes longer than the default 300s timeout
+        # # Otherwise the build will freeze at signing the frameworks if the keychain is locked
+        # echo "Increasing keychain auto lock timeout"
+        # security set-keychain-settings -lut 2680 ~/Library/Keychains/build.keychain
+        # flutter build ipa --release
+        # echo "Locking keychain"
+        # security lock-keychain ~/Library/Keychains/build.keychain
     - name: Upload IPA artifact
       uses: actions/upload-artifact@v3
       with:
