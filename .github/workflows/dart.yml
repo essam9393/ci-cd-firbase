@@ -79,7 +79,7 @@ jobs:
     - name: Upload IPA artifact
       uses: actions/upload-artifact@v3
       with:
-        name: release-ipa
+        name: deleteme
         path: ${{ env.PATH_TO_IPA }}
 
     - name: Publishing app to TestFlight
