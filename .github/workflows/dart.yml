@@ -8,7 +8,7 @@ jobs:
   build:
     runs-on: macos-latest
     steps:
-      # Checks-out our repository under $GITHUB_WORKSPACE, so our job can access it
+      # Checks -out our repository under $GITHUB_WORKSPACE, so our job can access it
       - name: Checkout repository
         uses: actions/checkout@v2
 
