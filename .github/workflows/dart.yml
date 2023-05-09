@@ -1,4 +1,3 @@
-
 name: "[DEV] Build and Publish iOS"
 on:
   push:
@@ -38,6 +37,26 @@ jobs:
           # apply provisioning profile
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+
+      # Generate ExportOptions.plist file
+      - name: Generate ExportOptions.plist file
+        run: |
+          echo '<?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+          "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>method</key>
+              <string>app-store</string>
+              <key>teamID</key>
+              <string>766FMFGNK5</string>
+              <key>uploadBitcode</key>
+              <false/>
+              <key>uploadSymbols</key>
+              <true/>
+          </dict>
+          </plist>' > ios/Runner/ExportOptions.plist
+      
       # Install flutter
       - name: Flutter get
         uses: subosito/flutter-action@v1
@@ -57,33 +76,4 @@ jobs:
         with:
          name: release-ipa
          # Path to the release files
-         path: build/ios/ipa/*.ipa
-
-      # Important! Cleanup: remove the certificate and provisioning profile from the runner!
-      - name: Clean up keychain and provisioning profile
-        if: ${{ always() }}
-        run: |
-          security delete-keychain $RUNNER_TEMP/app-signing.keychain-db
-          rm ~/Library/MobileDevice/Provisioning\ Profiles/build_pp.mobileprovision
-  # Release job, upload the ipa to Firebase App Distribution
-  release:
-    name: Release ipa to Firebase
-    needs: [ build ]
-    runs-on: ubuntu-latest
-    steps:
-    
-    # Retrieve ipa file from GitHub artifacts
-    - uses: actions/checkout@v2
-    - name: Get release-ipa from artifacts
-      uses: actions/download-artifact@v2
-      with:
-        name: release-ipa
-
-    # Upload ipa file to Fiebase
-    - name: Upload artifact to Firebase App Distribution
-      uses: wzieba/Firebase-Distribution-Github-Action@v1
-      with:
-        appId: ${{secrets.FIREBASE_IOS_APP_ID}}
-        token: ${{secrets.FIREBASE_TOKEN}}
-        groups: ios-developers
-        file: deleteme.ipa
+         path: build/ios
