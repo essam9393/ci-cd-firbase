@@ -12,7 +12,7 @@ env:
   FLUTTER_CHANNEL: 'stable' # 'stable', 'beta', or 'master', default to: 'stable'
   FLUTTER_VERSION: '3.7.12'
   XCODE_VERSION: '14.2'
-  PATH_TO_IPA: 'build/ios/ipa/deleteme.ipa'
+  PATH_TO_IPA: 'build/ios/ipa/instapets.ipa'
 
 jobs:
   ios:
@@ -79,7 +79,7 @@ jobs:
     - name: Upload IPA artifact
       uses: actions/upload-artifact@v3
       with:
-        name: deleteme
+        name: instapets
         path: ${{ env.PATH_TO_IPA }}
 
     - name: Publishing app to TestFlight
