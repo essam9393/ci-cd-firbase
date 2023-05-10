@@ -45,21 +45,28 @@ jobs:
           "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
           <dict>
-              <key>compileBitcode</key>
-              <false/>
-              <key>destination</key>
-              <string>export</string>
-              <key>method</key>
-              <string>ad-hoc</string>
-              <key>signingStyle</key>
-              <string>automatic</string>
-              <key>stripSwiftSymbols</key>
-              <true/>
-              <key>teamID</key>
-              <string>766FMFGNK5</string>
-              <key>thinning</key>
-              <string>&lt;none&gt;</string>
+            <key>compileBitcode</key>
+            <false/>
+            <key>destination</key>
+            <string>export</string>
+            <key>method</key>
+            <string>ad-hoc</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>co.spiritude.instapets</key>
+              <string>instapets Hoc</string>
             </dict>
+            <key>signingCertificate</key>
+            <string>14FD21900796636587354971D4E6173B0A7B47A2</string>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>stripSwiftSymbols</key>
+            <true/>
+            <key>teamID</key>
+            <string>766FMFGNK5</string>
+            <key>thinning</key>
+            <string>&lt;none&gt;</string>
+          </dict>
           </plist>' > ios/Runner/ExportOptions.plist
       
       # Install flutter
@@ -79,9 +86,9 @@ jobs:
       - name: collect ipa artifacts
         uses: actions/upload-artifact@v2
         with:
-         name: release-ipa
+         name: instapets.ipa
          # Path to the release files
-         path: build/ios
+         path: build/ios/ipa
   distribute-ios:
       needs: build
       runs-on: ubuntu-latest
