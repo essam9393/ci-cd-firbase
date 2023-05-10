@@ -17,10 +17,6 @@ env:
 jobs:
   build-ios:
     runs-on: macos-latest
-    defaults:
-      run:
-        working-directory: ci-cd-firbase/app
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
