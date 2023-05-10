@@ -97,6 +97,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: instapets.ipa
+          path: ./
         
       - name: Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
@@ -104,4 +105,4 @@ jobs:
                 appId: ${{secrets.IOS_FIREBASE_APP_ID_STAGING}}
                 token: ${{secrets.FIREBASE_TOKEN}}
                 groups: testers
-                file: build/ios/instapets.ipa
+                file: ./instapets.ipa
