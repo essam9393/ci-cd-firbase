@@ -12,46 +12,9 @@ env:
   FLUTTER_CHANNEL: 'stable' # 'stable', 'beta', or 'master', default to: 'stable'
   FLUTTER_VERSION: '3.7.12'
   XCODE_VERSION: '14.2'
-  PATH_TO_AAB: 'build/app/outputs/bundle/release/app-release.aab'
-  ANDROID_PACKAGE_NAME: 'com.base.project'
   PATH_TO_IPA: 'build/ios/ipa/flutter_github_actions_basics.ipa'
 
 jobs:
-  deploy_android:
-    name: Deploying to playstore
-    runs-on: ubuntu-latest
-    # needs: [build_android]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Setup Java
-        uses: actions/setup-java@v1
-        with:
-          java-version: 12.x
-      - name: Decode android
-        run: echo "${{ secrets.KEYSTORE_JKS_PROD }}" | base64 --decode > android/base.jks
-
-      - name: Decode android/key.properties
-        run: echo "${{ secrets.KEY_PROPERTIES_PROD }}" | base64 --decode > android/key.properties
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v1
-        with:
-          flutter-version: 3.7.12
-      - run: flutter pub get
-      - run: flutter build appbundle --release  --flavor pro -t lib/main_pro.dart
-      - name: Upload AAB artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: release-aab
-          path: ${{ env.PATH_TO_AAB }}
-          
-      - name: Firebase App Distribution
-        uses: wzieba/Firebase-Distribution-Github-Action@v1.2.1
-        with:
-          appId: ${{secrets.FIREBASE_APP_ID}}
-          token: ${{secrets.FIREBASE_TOKEN}}
-          groups: testers
-          file: app/build/outputs/apk/release/app-release-unsigned.apk
   build-ios:
     runs-on: macos-latest
     defaults:
@@ -59,12 +22,8 @@ jobs:
         working-directory: app
 
     steps:
-      - uses: actions/checkout@v2
-
-      - uses: subosito/flutter-action@v1.5.3
-
-      - name: Install Dependencies
-        run: flutter packages get
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
       - name: Install the Apple certificate and provisioning profile
         env:
@@ -94,7 +53,14 @@ jobs:
           # apply provisioning profile
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+      - name: Flutter get
+        uses: subosito/flutter-action@v1
+        with:
+          flutter-version: '3.7.12'
 
+      # Install your project's dependencies
+      - run: flutter pub get
+      
       - name: Build
         run: flutter build ios --release --no-codesign
 
