@@ -104,4 +104,4 @@ jobs:
                 appId: ${{secrets.IOS_FIREBASE_APP_ID_STAGING}}
                 token: ${{secrets.FIREBASE_TOKEN}}
                 groups: testers
-                file: instapets.ipa
+                file: build/ios/instapets.ipa
