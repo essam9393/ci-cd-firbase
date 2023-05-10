@@ -89,19 +89,19 @@ jobs:
          name: instapets.ipa
          # Path to the release files
          path: build/ios
-#   distribute-ios:
-#       needs: build
-#       runs-on: ubuntu-latest
-#       steps:
-#       - uses: actions/checkout@v2
-#       - uses: actions/download-artifact@v2
-#         with:
-#           name: instapets.ipa
+  distribute-ios:
+      needs: build
+      runs-on: ubuntu-latest
+      steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        with:
+          name: instapets.ipa
         
-#       - name: Firebase App Distribution
-#         uses: wzieba/Firebase-Distribution-Github-Action@v1
-#         with:
-#                 appId: ${{secrets.IOS_FIREBASE_APP_ID_STAGING}}
-#                 token: ${{secrets.FIREBASE_TOKEN}}
-#                 groups: testers
-#                 file: instapets.ipa
+      - name: Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+                appId: ${{secrets.IOS_FIREBASE_APP_ID_STAGING}}
+                token: ${{secrets.FIREBASE_TOKEN}}
+                groups: testers
+                file: instapets.ipa
