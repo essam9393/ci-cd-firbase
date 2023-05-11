@@ -1,11 +1,12 @@
-name: "[DEV] Build and Publish iOS"
+name: "[DEV] firbase  ANDROID & IOS"
 on:
   push: 
-    branches: [ main ]
+    branches: [ dev ]
     
 jobs:
   # Build job
   build:
+    name: "Build IOS"
     runs-on: macos-latest
     steps:
       # Checks-out our repository under $GITHUB_WORKSPACE, so our job can access it
@@ -77,8 +78,6 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: release-ipa
-
-    # Upload ipa file to Fiebase
     - name: Upload artifact to Firebase App Distribution
       uses: wzieba/Firebase-Distribution-Github-Action@v1
       with:
@@ -86,3 +85,51 @@ jobs:
         token: ${{secrets.FIREBASE_TOKEN}}
         groups: testers
         file: instapets.ipa
+
+  
+
+  deploy_android:
+    name: Deploying to Firebase
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 12.x
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: Decode android
+        run: echo "${{ secrets.KEYSTORE_JKS_PROD }}" | base64 --decode > android/base.jks
+
+      - name: Decode android/key.properties
+        run: echo "${{ secrets.KEY_PROPERTIES_PROD }}" | base64 --decode > android/key.properties
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v1
+        with:
+          flutter-version: 3.7.12
+
+      - run: flutter pub get
+
+      - run: flutter build apk --release
+
+      - name: Upload apk artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1.5.0
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID }}
+          token: ${{ secrets.FIREBASE_TOKEN }}
+          groups: testers
+          file: build/app/outputs/flutter-apk/app-release.apk
