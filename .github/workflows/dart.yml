@@ -75,7 +75,7 @@ jobs:
         # Otherwise the build will freeze at signing the frameworks if the keychain is locked
         echo "Increasing keychain auto lock timeout"
         security set-keychain-settings -lut 21600 ~/Library/Keychains/build.keychain
-        flutter build ipa --release
+        flutter build ipa --release -allowProvisioningUpdates
         echo "Locking keychain"
         security lock-keychain ~/Library/Keychains/build.keychain
     - name: Upload IPA artifact
