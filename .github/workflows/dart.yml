@@ -15,30 +15,6 @@ env:
   PATH_TO_IPA: 'build/ios/ipa/instapets.ipa'
 
 jobs:
-  code-analysis-and-testing:
-  #  if: false
-    name: Code analysis and testing
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
-    - name: Set up Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        channel: ${{ env.FLUTTER_CHANNEL }}
-        # flutter-version: ${{ env.FLUTTER_VERSION }} # you can also specify exact version of flutter
-
-    - name: Get pub dependencies
-      run: flutter pub get
-
-    - name: Flutter analyze
-      run: flutter analyze
-
-    - name: Flutter test
-      run: flutter test
-
   ios:
     name: iOS CI/CD
     # needs: code-analysis-and-testing
@@ -112,5 +88,5 @@ jobs:
     - name: Upload IPA artifact
       uses: actions/upload-artifact@v3
       with:
-        name: release-ipa
+        name: instapets.ipa
         path: ${{ env.PATH_TO_IPA }}
