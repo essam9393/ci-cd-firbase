@@ -46,7 +46,16 @@ jobs:
 
       # Install your project's dependencies
       - run: flutter pub get
-
+      - name: Create ExportOptions.plist file
+        run: |
+          echo '<?xml version="1.0" encoding="UTF-8"?>' > ios/Runner/ExportOptions.plist
+          echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' >> ios/Runner/ExportOptions.plist
+          echo '<plist version="1.0">' >> ios/Runner/ExportOptions.plist
+          echo '<dict>' >> ios/Runner/ExportOptions.plist
+          echo '  <key>method</key>' >> ios/Runner/ExportOptions.plist
+          echo '  <string>enterprise</string>' >> ios/Runner/ExportOptions.plist
+          echo '</dict>' >> ios/Runner/ExportOptions.plist
+          echo '</plist>' >> ios/Runner/ExportOptions.plist
       # Build and sign the ipa using a single flutter command
       - name: Building IPA
         run: flutter build ipa --release --export-options-plist=ios/Runner/ExportOptions.plist
