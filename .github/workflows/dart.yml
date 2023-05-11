@@ -6,7 +6,7 @@ on:
     branches: [ main ] # This will trigger the workflow on every push to the main branch
   # pull_request:
   #   branches: [ main ] # Add this trigger to run this workflow on PR's to the main branch
-  workflow_dispatch: # to manually run this workflow
+ # workflow_dispatch: # to manually run this workflow
 
 env:
   FLUTTER_CHANNEL: 'stable' # 'stable', 'beta', or 'master', default to: 'stable'
@@ -16,7 +16,7 @@ env:
 
 jobs:
   code-analysis-and-testing:
-    if: false
+  #  if: false
     name: Code analysis and testing
     runs-on: ubuntu-latest
     timeout-minutes: 30
