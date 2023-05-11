@@ -2,16 +2,16 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>compileBitcode</key>
+	<false/>
 	<key>destination</key>
 	<string>export</string>
-	<key>manageAppVersionAndBuildNumber</key>
-	<true/>
 	<key>method</key>
-	<string>app-store</string>
+	<string>ad-hoc</string>
 	<key>provisioningProfiles</key>
 	<dict>
-		<key>co.spiritude.instapets</key>
-		<string>instapets</string>
+		<key>co.spiritude.instapets.dev</key>
+		<string>instapets dev</string>
 	</dict>
 	<key>signingCertificate</key>
 	<string>Apple Distribution</string>
@@ -21,7 +21,7 @@
 	<true/>
 	<key>teamID</key>
 	<string>766FMFGNK5</string>
-	<key>uploadSymbols</key>
-	<true/>
+	<key>thinning</key>
+	<string>&lt;none&gt;</string>
 </dict>
 </plist>
