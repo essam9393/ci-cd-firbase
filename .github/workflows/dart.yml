@@ -40,6 +40,8 @@ jobs:
         echo "$FS_PROV_FILE" >> prov.temp.txt
         echo "$FS_P12_FILE ">> cert.temp.txt
         base64 --decode prov.temp.txt > prov.temp.mobileprovision
+        echo "Contents of decoded provisioning profile:"
+        cat prov.temp.mobileprovision
         base64 --decode cert.temp.txt > cert.temp.p12
 
         echo "Copy provisioning file to the correct locations"
