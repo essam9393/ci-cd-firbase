@@ -67,7 +67,7 @@ jobs:
           rm ~/Library/MobileDevice/Provisioning\ Profiles/build_pp.mobileprovision
   # Release job, upload the ipa to Firebase App Distribution
   release:
-    name: Release ipa to Firebase
+    name: Release ipa to TestFlight
     needs: [ build ]
     runs-on: ubuntu-latest
     steps:
