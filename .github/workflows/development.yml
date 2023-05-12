@@ -55,7 +55,7 @@ jobs:
       - name: collect ipa artifacts
         uses: actions/upload-artifact@v2
         with:
-         name: release-ipa
+         name: release.ipa
          # Path to the release files
          path: build/ios/ipa/*.ipa
 
@@ -74,7 +74,7 @@ jobs:
     
     # Retrieve ipa file from GitHub artifacts
     - uses: actions/checkout@v2
-    - name: Get release-ipa from artifacts
+    - name: Get release.ipa from artifacts
       uses: actions/download-artifact@v2
       with:
         name: release.ipa
