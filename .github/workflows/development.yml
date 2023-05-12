@@ -106,7 +106,7 @@ jobs:
           node-version: 16
 
       - name: Decode android
-        run: echo "${{ secrets.KEYSTORE_JKS_PROD }}" | base64 --decode > android/base.jks
+        run: echo "${{ secrets.KEYSTORE_JKS_PROD }}" | base64 --decode > android/mohamed.jks
 
       - name: Decode android/key.properties
         run: echo "${{ secrets.KEY_PROPERTIES_PROD }}" | base64 --decode > android/key.properties
